@@ -1,0 +1,27 @@
+Sub connect()
+    Dim Password As String
+    Dim SQLStr As String
+    Dim Server_Name As String
+    Dim User_ID As String
+    Dim Database_Name As String
+    Dim table_name As String
+    
+    Set rs = CreateObject("ADODB.Recordset")
+    Server_Name = "www.coffeeney.com"
+    Database_Name = "u1031887_sandy"
+    User_ID = "u1031887_sandy"
+    Password = "Uwais3Hanif"
+    table_name = "tabel_barang"
+    
+    Set cn = CreateObject("ADODB.Connection")
+    cn.Open "Driver={MySQL ODBC 8.0 Unicode Driver};Server=" & _
+            Server_Name & ";Database=" & Database_Name & _
+            ";Uid=" & User_ID & ";Pwd=" & Password & ";"
+    
+    SQLStr = "SELECT * FROM tabel_barang;"
+    rs.Open SQLStr, cn, adopenstatic
+    
+    ThisWorkbook.Sheets(1).Range("A1").CopyFromRecordset rs
+    cn.Close
+    MsgBox "DONE!"
+End Sub
