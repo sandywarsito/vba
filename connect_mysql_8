@@ -10,7 +10,7 @@ Sub connect()
     Server_Name = "www.coffeeney.com"
     Database_Name = "u1031887_sandy"
     User_ID = "u1031887_sandy"
-    Password = "Uwais3Hanif"
+    Password = "***********"
     table_name = "tabel_barang"
     
     Set cn = CreateObject("ADODB.Connection")
