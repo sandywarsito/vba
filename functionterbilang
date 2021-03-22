@@ -1,0 +1,35 @@
+Function Terbilang(n As Long) As String 'max 2.147.483.647
+Dim satuan As Variant, Minus As Boolean
+On Error GoTo terbilang_error
+satuan = Array("", "Satu", "Dua", "Tiga", "Empat", "Lima", "Enam", "Tujuh", "Delapan", "Sembilan", "Sepuluh", "Sebelas")
+If n < 0 Then
+    Minus = True
+    n = n * -1
+End If
+Select Case n
+    Case 0 To 11
+        Terbilang = " " + satuan(Fix(n))
+    Case 12 To 19
+        Terbilang = Terbilang(n Mod 10) + " Belas"
+    Case 20 To 99
+        Terbilang = Terbilang(Fix(n / 10)) + " Puluh" + Terbilang(n Mod 10)
+    Case 100 To 199
+        Terbilang = " Seratus" + Terbilang(n - 100)
+    Case 200 To 999
+        Terbilang = Terbilang(Fix(n / 100)) + " Ratus" + Terbilang(n Mod 100)
+    Case 1000 To 1999
+        Terbilang = " Seribu" + Terbilang(n - 1000)
+    Case 2000 To 999999
+        Terbilang = Terbilang(Fix(n / 1000)) + " Ribu" + Terbilang(n Mod 1000)
+    Case 1000000 To 999999999
+        Terbilang = Terbilang(Fix(n / 1000000)) + " Juta" + Terbilang(n Mod 1000000)
+    Case Else
+        Terbilang = Terbilang(Fix(n / 1000000000)) + " Milyar" + Terbilang(n Mod 1000000000)
+End Select
+If Minus = True Then
+    Terbilang = "Minus" + Terbilang
+End If
+Exit Function
+terbilang_error:
+MsgBox Err.Description, vbCritical, "Terbilang Error"
+End Function
