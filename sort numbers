@@ -1,0 +1,10 @@
+Private Sub Worksheet_BeforeDoubleClick (ByVal Target as Range, Cancel As Boolean)
+    'Declare your Variables
+        Dim LastRow As Long
+    'Find last row
+        LastRow = Cells (Rows.Count, 1) .End (xlUp) .Row
+    'Sort ascending on double-clicked column
+        Rows ("6:" & LastRow) .Sort _
+        Key1: = Cells (6, ActiveCell.Column), _
+        Order1: = xlAscending
+End Sub
