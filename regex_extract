@@ -1,0 +1,217 @@
+Rem Attribute VBA_ModuleType=VBAModule
+Option VBASupport 1
+Sub runmatched()
+
+Dim i As Long
+For i = 1 To 10247
+    Call extract_perforate(i)
+    Call extract_whsip(i)
+    Call extract_bleed(i)
+    Call extract_ubcalc(i)
+    Call extract_tension(i)
+Next i
+End Sub
+
+Public Function removechar(target As String, patt As String) As String
+    With New RegExp
+        .pattern = patt
+        .MultiLine = True
+        .Global = True
+        removechar = .Replace(target, "")
+    End With
+End Function
+Public Function replacechar(target As String, patt As String) As String
+    With New RegExp
+        .pattern = patt
+        .MultiLine = True
+        .Global = True
+        replacechar = .Replace(target, "-")
+    End With
+End Function
+
+'----------------------------------------------------------------------
+Sub extract_perforate(row As Long)
+Dim stringOne As String
+Dim regexOne As Object
+Dim i As Integer
+Dim j As Long
+
+Set regexOne = New RegExp
+ 
+regexOne.pattern = "(perfora|punch|perfo |re-perfora|reservoir|, res|and res)(.*?)(mbrt|,|mld|mtr|mtmd)"
+
+regexOne.Global = True
+regexOne.IgnoreCase = True
+stringOne = Sheets("Sheet1").Range("A1").Offset(row - 1, 0).Value
+'MsgBox stringOne
+ 
+Set thematches = regexOne.Execute(stringOne)
+i = 1
+For Each Match In thematches
+  'Debug.Print Match.Value
+  'MsgBox Match.Value
+  Sheets("Sheet1").Range("A1").Offset(row - 1, i).Value = Match.Value
+i = i + 1
+Next
+End Sub
+
+'----------------------------------------------------------------------
+Sub extract_whsip(row As Long)
+Dim stringOne As String
+Dim regexOne As Object
+Dim i As Integer
+Dim j As Long
+
+
+Set regexOne = New RegExp
+ 
+regexOne.pattern = "(whp|whsip|whsp)(.*?)(psi|pai)"
+
+regexOne.Global = True
+regexOne.IgnoreCase = True
+stringOne = Sheets("Sheet1").Range("A1").Offset(row - 1, 0).Value
+'MsgBox stringOne
+ 
+Set thematches = regexOne.Execute(stringOne)
+i = 1
+For Each Match In thematches
+  'Debug.Print Match.Value
+  'MsgBox Match.Value
+  Sheets("Sheet1").Range("D1").Offset(row - 1, i).Value = Match.Value
+i = i + 1
+Next
+End Sub
+'----------------------------------------------------------------------
+
+Sub extract_bleed(row As Long)
+Dim stringOne As String
+Dim regexOne As Object
+Dim i As Integer
+Dim j As Long
+Set regexOne = New RegExp
+regexOne.pattern = "(bled off|bleed off|b/off)(.*?)(psi|prior|then)"
+
+regexOne.Global = True
+regexOne.IgnoreCase = True
+stringOne = Sheets("Sheet1").Range("A1").Offset(row - 1, 0).Value
+'MsgBox stringOne
+ 
+Set thematches = regexOne.Execute(stringOne)
+i = 1
+For Each Match In thematches
+  'Debug.Print Match.Value
+  'MsgBox Match.Value
+  Sheets("Sheet1").Range("H1").Offset(row - 1, i).Value = Match.Value
+  
+i = i + 1
+  
+Next
+End Sub
+Sub extract_ubcalc(row As Long)
+Dim stringOne As String
+Dim regexOne As Object
+Dim i As Integer
+Dim j As Long
+Set regexOne = New RegExp
+ 
+regexOne.pattern = "(UB = |OB Calc :|calculated over balance|calculated under balance|ub~|calc\.ub|calculate UB =|ob calculated|overbalance calculated|est\. ub|est\. ob|calc ob|calc\. ob|calc\. ub|ub=|ub:|ob:|est ub|ub calc|calc ub|in underbalance|in under balance|estimated ub|ub estimated|underbalance calculated|calculated underbalance|underbalace estimat|ub value|calculated ob|ob value|ub~[0-9]|underbalance value|calculated ub|calculated ob)(.*?)(psi)"
+
+regexOne.Global = True
+regexOne.IgnoreCase = True
+stringOne = Sheets("Sheet1").Range("A1").Offset(row - 1, 0).Value
+'MsgBox stringOne
+ 
+Set thematches = regexOne.Execute(stringOne)
+i = 1
+For Each Match In thematches
+  'Debug.Print Match.Value
+  'MsgBox Match.Value
+  Sheets("Sheet1").Range("M1").Offset(row - 1, i).Value = Match.Value
+  
+i = i + 1
+  
+Next
+End Sub
+
+'----------------------------------------------------------------------
+Sub extract_tension(row As Long)
+Dim stringOne As String
+Dim regexOne As Object
+Dim i As Integer
+Dim j As Long
+
+Set regexOne = New RegExp
+ 
+regexOne.pattern = "(tension)(.*?)(lb)"
+
+regexOne.Global = True
+regexOne.IgnoreCase = True
+stringOne = Sheets("Sheet1").Range("A1").Offset(row - 1, 0).Value
+'MsgBox stringOne
+ 
+Set thematches = regexOne.Execute(stringOne)
+i = 1
+For Each Match In thematches
+  'Debug.Print Match.Value
+  'MsgBox Match.Value
+  Sheets("Sheet1").Range("P1").Offset(row - 1, i).Value = Match.Value
+  
+i = i + 1
+  
+Next
+ 
+End Sub
+
+'----------------------------------------------------------------------
+
+Function extract_wreg(str_source As String, str_pattern As String) As String()
+Dim results() As String
+Dim stringOne As String
+Dim regexOne As Object
+Dim i As Integer
+Dim j As Long
+
+Set regexOne = New RegExp
+ 
+regexOne.pattern = str_pattern
+regexOne.Global = True
+regexOne.IgnoreCase = True
+ 
+Set thematches = regexOne.Execute(str_source)
+On Error Resume Next
+ReDim results(1 To thematches.Count)
+i = 1
+For Each Match In thematches
+    results(i) = Match.Value
+        
+    i = i + 1
+Next
+ 
+extract_wreg = results()
+End Function
+
+Sub test()
+
+Dim txt As String
+Dim pat As String
+Dim M, N As Integer
+Dim result() As String
+Dim tast As Variant
+
+pat = "(perfora|punch|perfo |re-perfora|reservoir|, res|and res)(.*?)(mbrt|,|mld|mtr|mtmd)"
+On Error Resume Next
+For M = 1 To 98
+txt = Sheets("Sheet4").Range("H2").Offset(M, 0).Value
+tast = extract_wreg(txt, pat)
+For N = 1 To UBound(tast)
+    Sheets("Sheet4").Range("j2").Offset(M, N).Value = tast(N)
+Next N
+Next M
+End Sub
+'----------------------------------------------------------------------
+
+Function MonthNames()
+  MonthNames = Array("January", "February", "March", _
+   "April", "May", "June", "July", "August", _
+   "September", "October", "November", "December")
+End Function
